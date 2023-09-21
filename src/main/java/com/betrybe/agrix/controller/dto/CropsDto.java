@@ -5,19 +5,19 @@ import com.betrybe.agrix.model.entities.Farm;
 import java.time.LocalDate;
 
 /**
- * Dto para criacao de Crops.
+ * Dto for creating Crops.
  *
- * @param name nome da Crop criada
- * @param plantedArea area plantada da Crop criada
+ * @param name name of the Crop created
+ * @param plantedArea planted area of the created Crop
  */
 public record CropsDto(String name, Double plantedArea,
                        String plantedDate, String harvestDate) {
 
   /**
-   * Método responsavel por converter a Dto da crop para uma farm.
+   * Method responsible for converting the Dto of the crop to a farm.
    *
-   * @param farm Fazenda recebida por parametro para registro
-   * @return retorna uma crop criada.
+   * @param farm Farm received as a parameter for registration
+   * @return returns a created crop.
    */
   public Crop toCrop(Farm farm) {
     LocalDate plantedDateParsed = LocalDate.parse(plantedDate);

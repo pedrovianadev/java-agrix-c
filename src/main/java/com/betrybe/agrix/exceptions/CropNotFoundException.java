@@ -1,7 +1,7 @@
 package com.betrybe.agrix.exceptions;
 
 /**
- * Customized exception that will be thrown if the plantation
+ * Customized exception that will be thrown if the planting
  * is not found.
  */
 public class CropNotFoundException extends Exception {

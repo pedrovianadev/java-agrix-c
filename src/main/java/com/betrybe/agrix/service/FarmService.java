@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Service layer for everything that interacts with the farm entity.
+ * FarmService class, service layer for /farm endpoints.
  */
 @Service
 public class FarmService {
@@ -49,7 +49,7 @@ public class FarmService {
    * @param id id of the searched farm
    * @return Returns a list of all the plantations
    * @throws FarmNotFoundException if the farm is not found
-   *        an exception is raised.
+   *        found, an exception is raised.
    */
   public List<Crop> getAllCropsFromFarm(Long id) throws FarmNotFoundException {
     Optional<Farm> farmToFound = this.farmRepository.findById(id);

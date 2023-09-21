@@ -34,7 +34,7 @@ public class Farm {
   /**
    * Farm entity constructor.
    *
-   * @param id id of Farm
+   * @param id id da Farm
    * @param name name of Farm
    * @param size farm size
    */

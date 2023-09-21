@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller de todos os metodos da rota /crops.
+ * Controller of all methods in the /crops route.
  */
 @RestController
 @RequestMapping("/crops")
@@ -29,10 +30,10 @@ public class CropController {
   private FertilizerService fertilizerService;
 
   /**
-   * Construtor do controller CropController.
+   * CropController controller constructor.
    *
-   * @param cropService recebe a camada de servico por
-   *                    injecao de dependencia.
+   * @param cropService receives the service layer by
+   *        dependency injection.
    */
   @Autowired
   public CropController(CropService cropService, FertilizerService fertilizerService) {
@@ -41,19 +42,20 @@ public class CropController {
   }
 
   /**
-   * Mapea a rota GET /crops com a funcao de retornar uma lista com
-   * todas as plantacoes existentes no banco.
+   * Map the GET /crops route with the function of returning a list of
+   * all the plantations in the database.
    *
-   * @return retorna uma lista de CropResponseDto de todas as plantacoes.
+   * @return returns a CropResponseDto list of all the crops.
    */
   @GetMapping
+  @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
   public ResponseEntity<List<CropResponseDto>> getAllCrops() {
 
     List<Crop> allCrops = this.cropService.getAllCrops();
 
     List<CropResponseDto> cropsResponse = allCrops.stream()
         .map(crop -> new CropResponseDto(crop.getId(), crop.getName(),
-            crop.getPlantedArea(), crop.getFarm().getId(), crop.getPlantedDate(),
+        crop.getPlantedArea(), crop.getFarm().getId(), crop.getPlantedDate(),
             crop.getHarverstDate()))
         .toList();
 
@@ -61,12 +63,12 @@ public class CropController {
   }
 
   /**
-   * Mapea a rota GET /crops/id para retornar as informacoes de uma crop
-   * especifica.
+   * Maps the GET /crops/id route to return the information of a crop
+   * specifies.
    *
-   * @param id id da crop buscada passada por Path
-   * @return retorna um ResponseEntity com a crop especifica ou um erro
-   *     customizado caso ela nao seja encontrada.
+   * @param id id of the searched crop passed by Path
+   * @return returns a ResponseEntity with the specified crop or an error
+   *        if it is not found.
    */
   @GetMapping("/{id}")
   public ResponseEntity getCropById(@PathVariable Long id) {
@@ -95,7 +97,8 @@ public class CropController {
    * @return returns a list of crops that meet the requirement
    */
   @GetMapping("/search")
-  public ResponseEntity<List<CropResponseDto>> searchCropByDate(@RequestParam LocalDate start,
+  public ResponseEntity<List<CropResponseDto>> searchCropByDate(
+      @RequestParam LocalDate start,
       @RequestParam LocalDate end) {
 
     List<Crop> allCrops = this.cropService.searchCropByDate(start, end);
@@ -121,8 +124,10 @@ public class CropController {
   public ResponseEntity createFertilizerByCropId(@PathVariable Long cropId,
       @PathVariable Long fertilizerId) {
     try {
+
       Crop cropAdded = this.cropService.setFertilizer(cropId, fertilizerId);
       System.out.println(cropAdded);
+
       return ResponseEntity.status(HttpStatus.CREATED).body(
           "Fertilizante e plantação associados com sucesso!"
       );

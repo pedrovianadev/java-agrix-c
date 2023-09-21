@@ -38,6 +38,7 @@ public class FertilizerService {
    *
    * @return returns a list of all fertilizers.
    */
+
   public List<Fertilizer> getAllFertilizers() {
     return this.fertilizerRepository.findAll();
   }

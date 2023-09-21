@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Cria a classe FarmController, um RestController que ira
- * conter todas as funcoes do endpoint /farms.
+ * Creates the FarmController class, a RestController that will
+ * contain all the functions of the /farms endpoint.
  */
 @RestController
 @RequestMapping("/farms")
@@ -33,12 +34,12 @@ public class FarmController {
   private CropService cropService;
 
   /**
-   * Construtor da classe FarmController.
+   * Constructor of the FarmController class.
    *
-   * @param farmService instancia da camada de servico recebida
-   *                    por injecao de dependencia.
-   * @param cropService instancia da camada de servico crops recebida
-   *                    por injecao de dependencia.
+   * @param farmService instance of the service layer received
+   *        by dependency injection.
+   * @for cropService instance of the crops service layer received
+   *        by dependency injection.
    */
   @Autowired
   public FarmController(FarmService farmService, CropService cropService) {
@@ -47,12 +48,12 @@ public class FarmController {
   }
 
   /**
-   * Cria o endpoint POST /farms , onde é possivel criar e salvar
-   * no banco de dados uma nova farm.
+   * Creates the POST /farms endpoint, where you can create and save
+   *        in the database a new farm.
    *
-   * @param farmDto Recebe uma nova farm no modelo Dto
-   * @return retorna uma ResponseEntity com as informacoes
-   *     da nova farm criada
+   * @param farmDto Receives a new farm in the Dto model
+   * @return Returns a ResponseEntity with the information
+   *        of the new farm created
    */
   @PostMapping
   public ResponseEntity<Farm> createFarm(@RequestBody FarmDto farmDto) {
@@ -62,20 +63,21 @@ public class FarmController {
   }
 
   /**
-   * Cria a rota GET /farms que retorna todas as farms registradas.
+   * Creates the GET /farms route that returns all registered farms.
    *
-   * @return retorna uma lista com todas as farms registradas
+   * @return returns a list of all registered farms
    */
   @GetMapping
+  @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER"})
   public ResponseEntity<List<Farm>> getAllFarms() {
     List<Farm> allFarms = this.farmService.getFarms();
     return ResponseEntity.status(HttpStatus.OK).body(allFarms);
   }
 
   /**
-   * Cria a rota GET /farms/id que retorna a farm buscada pelo id.
+   * Creates the GET route /farms/id that returns the farm searched by id.
    *
-   * @return retorna uma Farm do banco de dados.
+   * @return returns a farm from the database.
    */
   @GetMapping("/{farmId}")
   public ResponseEntity getFarmById(@PathVariable Long farmId) throws FarmNotFoundException {
@@ -95,12 +97,12 @@ public class FarmController {
   }
 
   /**
-   * Rota POST /farmid/crops que salva uma crop em uma farm especificada.
+   * POST route /farmid/crops that saves a crop on a specified farm.
    *
-   * @param farmId id da Farm
-   * @param cropsDto camada Dto para a criacao de crops
-   * @return retorna uma CropResponseDto com somente as informacoes da Crop
-   *     omitindo informacoes da farm.
+   * @param farmId farm id
+   * @param cropsDto Dto layer for creating crops
+   * @return returns a CropResponseDto with only the Crop information
+   *        omitting farm information.
    */
   @PostMapping("/{farmId}/crops")
   public ResponseEntity createCropByFarmId(@PathVariable Long farmId, @RequestBody
@@ -131,12 +133,12 @@ public class FarmController {
   }
 
   /**
-   * Método que mapea a rota /farmId/crops e retorna todas as plantacoes
-   * que uma fazenda possui.
+   * Method that maps the /farmId/crops route and returns all the crops
+   *        that a farm has.
    *
-   * @param farmId id da fazenda buscada recebida por parametro.
-   * @return retorna uma Lista com todas as crops ou uma excecao de fazenda
-   *     nao encontrada
+   * @param farmId id of the farm fetched by parameter.
+   * @return returns a list with all the crops or a farm exception
+   *        not found
    */
   @GetMapping("/{farmId}/crops")
   public ResponseEntity getAllCropsFromFarm(@PathVariable Long farmId) {
@@ -145,7 +147,7 @@ public class FarmController {
       List<Crop> allCrops = this.farmService.getAllCropsFromFarm(farmId);
       List<CropResponseDto> allCropsResponse = allCrops.stream().map(
           crop -> new CropResponseDto(crop.getId(), crop.getName(),
-              crop.getPlantedArea(), crop.getFarm().getId(),
+          crop.getPlantedArea(), crop.getFarm().getId(),
               crop.getPlantedDate(), crop.getHarverstDate())).collect(Collectors.toList());
 
       return ResponseEntity.status(HttpStatus.OK).body(allCropsResponse);

@@ -84,9 +84,9 @@ public class CropService {
 
   /**
    * Returns the crops with the harvest date between the
-   * searched dates.
+   *        searched dates.
    *
-   * @param startingDate starting date of search
+   * @param startingDate starting date of the search
    * @param endingDate end date of search
    * @return returns a list of crops that meet the requirement
    */
@@ -135,6 +135,5 @@ public class CropService {
     Crop newCrop = this.cropRepository.save(cropFound);
     return newCrop;
   }
-
 
 }

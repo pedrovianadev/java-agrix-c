@@ -2,7 +2,7 @@ package com.betrybe.agrix.exceptions;
 
 /**
  * Creates a custom exception for cases in which the farm
- * is not found.
+ *        is not found.
  */
 public class FarmNotFoundException extends Exception {
 
